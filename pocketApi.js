@@ -73,26 +73,31 @@ export const ensureAccessTokenIsValid = async function (
   existingAccessToken,
   ConsumerKey
 ) {
-  // TODO: If there is an access token, check it is still valid
-
-  // If there is no access token, get one and store it in the secrets file
-  if (!existingAccessToken) {
-    const requestToken = await getRequestToken(ConsumerKey);
-
-    console.log(
-      `Please visit https://getpocket.com/auth/authorize?request_token=${requestToken}&redirect_uri=${redirect_uri}`
-    );
-    const rl = readline.createInterface({ input, output });
-    await rl.question(
-      "Press enter once you have authorized the application\r\n"
-    );
-    rl.close();
-
-    const newAccessToken = await getAccessToken(requestToken, ConsumerKey);
-
-    await updateSecretsFile(newAccessToken, ConsumerKey);
-    return newAccessToken;
+  // Check if the token is valid - if so return it, otherwise get a new one
+  if (existingAccessToken) {
+    try {
+      // Is there a better way to check our token is valid?
+      await getArticles(existingAccessToken, ConsumerKey);
+      return existingAccessToken;
+    } catch {
+      // TODO: Check if this is an authentication error or something else
+      console.log("Access token is invalid, requesting a new token...");
+      existingAccessToken = null;
+    }
   }
 
-  return existingAccessToken;
+  // Either no token or the existing token was invalid and has been set to null
+  const requestToken = await getRequestToken(ConsumerKey);
+
+  console.log(
+    `Please visit https://getpocket.com/auth/authorize?request_token=${requestToken}&redirect_uri=${redirect_uri}`
+  );
+  const rl = readline.createInterface({ input, output });
+  await rl.question("Press enter once you have authorized the application\r\n");
+  rl.close();
+
+  const newAccessToken = await getAccessToken(requestToken, ConsumerKey);
+
+  await updateSecretsFile(newAccessToken, ConsumerKey);
+  return newAccessToken;
 };
