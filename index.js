@@ -1,29 +1,18 @@
 import * as readline from "node:readline/promises";
-import { exit, stdin as input, stdout as output } from "node:process";
-import { readFile, writeFile, access } from "node:fs/promises";
+import { stdin as input, stdout as output } from "node:process";
 import { getRequestToken, getAccessToken, getArticles } from "./pocketApi.js";
+import { getSecretsFromFile, updateSecretsFile } from "./util.js";
 
 const constants = {
   RedirectUri: "http://localhost:3000",
-  SecretsFile: "secrets.json",
+  SecretsFileName: "secrets.json",
 };
 
-try {
-  await access(constants.SecretsFile);
-} catch {
-  console.log(`Could not find ${constants.SecretsFile}`);
-  exit();
-}
+let { AccessToken, ConsumerKey } = await getSecretsFromFile(constants.SecretsFileName);
 
-const secretFileContents = await readFile(constants.SecretsFile, {
-  encoding: "utf8",
-});
-const secrets = JSON.parse(secretFileContents);
+// TODO: If there is an access token, check it is still valid
 
-let { ConsumerKey, AccessToken } = secrets;
-
-// TODO: Check access token is still valid
-
+// If there is no access token, get one and store it in the secrets file
 if (!AccessToken) {
   const requestToken = await getRequestToken(
     ConsumerKey,
@@ -37,15 +26,9 @@ if (!AccessToken) {
   await rl.question("Press enter once you have authorized the application\r\n");
   rl.close();
 
-  const accessToken = await getAccessToken(requestToken, ConsumerKey);
-  AccessToken = accessToken;
+  AccessToken = await getAccessToken(requestToken, ConsumerKey);
 
-  const updatedSecrets = JSON.stringify({
-    AccessToken,
-    ConsumerKey,
-  });
-
-  await writeFile(constants.SecretsFile, updatedSecrets);
+  await updateSecretsFile(constants.SecretsFileName, AccessToken, ConsumerKey);
 }
 
 const { articleList, newSince } = await getArticles(AccessToken, ConsumerKey);
