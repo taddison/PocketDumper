@@ -58,7 +58,7 @@ const getAccessToken = async function(requestToken, consumerKey) {
   return responseJson.access_token;
 };
 
-const getArticles = async function(accessToken, consumerKey) {
+const getArticles = async function(accessToken, consumerKey, since = 0) {
   const response = await fetch(
     endpoints.GetArticles,
     {
@@ -69,13 +69,16 @@ const getArticles = async function(accessToken, consumerKey) {
         access_token: accessToken,
         detailType: "simple",
         sort: "newest",
+        since,
         // TODO: Pagination
         count: 1
       })
     }
   );
   const responseJson = await response.json();
-  return responseJson.list;
+  const { list: articleList, since: newSince } = responseJson;
+  
+  return { articleList, newSince };
 };
 
 // TODO: Check access token is still valid
@@ -98,7 +101,7 @@ if(!AccessToken) {
   await writeFile("secrets.json", updatedSecrets);
 }
 
-const articles = await getArticles(AccessToken, ConsumerKey);
-console.log(articles);
+const { articleList, newSince } = await getArticles(AccessToken, ConsumerKey);
+console.log({articles: Object.keys(articleList).length, newSince});
 
 // TODO: Write to file
