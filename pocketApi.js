@@ -89,7 +89,7 @@ export const ensureAccessTokenIsValid = async function (
     rl.close();
 
     const newAccessToken = await getAccessToken(requestToken, ConsumerKey);
-    
+
     await updateSecretsFile(newAccessToken, ConsumerKey);
     return newAccessToken;
   }

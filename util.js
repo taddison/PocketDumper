@@ -1,4 +1,3 @@
-
 import { exit } from "node:process";
 import { readFile, writeFile, access } from "node:fs/promises";
 
@@ -29,11 +28,11 @@ export const getSecretsFromFile = async function () {
   return { ConsumerKey, AccessToken };
 };
 
-export const updateSecretsFile = async function(AccessToken, ConsumerKey) {
+export const updateSecretsFile = async function (AccessToken, ConsumerKey) {
   const updatedSecrets = JSON.stringify({
     AccessToken,
     ConsumerKey,
   });
 
   await writeFile(SECRETS_FILE_NAME, updatedSecrets);
-}
+};
