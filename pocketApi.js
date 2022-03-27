@@ -71,8 +71,7 @@ export const getArticles = async function (
 
 export const ensureAccessTokenIsValid = async function (
   existingAccessToken,
-  ConsumerKey,
-  secretsFileName
+  ConsumerKey
 ) {
   // TODO: If there is an access token, check it is still valid
 
@@ -91,7 +90,7 @@ export const ensureAccessTokenIsValid = async function (
 
     const newAccessToken = await getAccessToken(requestToken, ConsumerKey);
     
-    await updateSecretsFile(secretsFileName, newAccessToken, ConsumerKey);
+    await updateSecretsFile(newAccessToken, ConsumerKey);
     return newAccessToken;
   }
 
