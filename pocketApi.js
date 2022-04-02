@@ -49,7 +49,8 @@ const getAccessToken = async function (requestToken, consumerKey) {
 export const getArticles = async function (
   accessToken,
   consumerKey,
-  since = 0
+  since = 0,
+  count = 99999
 ) {
   const response = await fetch(endpoints.GetArticles, {
     method: "POST",
@@ -60,8 +61,8 @@ export const getArticles = async function (
       detailType: "simple",
       sort: "newest",
       since,
+      count,
       // TODO: Pagination
-      count: 1,
     }),
   });
   const responseJson = await response.json();
@@ -78,7 +79,14 @@ export const ensureAccessTokenIsValid = async function (
   if (existingAccessToken) {
     try {
       // Is there a better way to check our token is valid?
-      await getArticles(existingAccessToken, ConsumerKey);
+      const beginningOfTime = 0;
+      const articleCount = 1;
+      await getArticles(
+        existingAccessToken,
+        ConsumerKey,
+        beginningOfTime,
+        articleCount
+      );
       return existingAccessToken;
     } catch {
       // TODO: Check if this is an authentication error or something else
