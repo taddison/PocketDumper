@@ -1,38 +1,38 @@
 import { exit } from "node:process";
 import { readFile, writeFile, access } from "node:fs/promises";
 
-const SECRETS_FILE_NAME = "secrets.json";
+const USER_DATA_FILE_NAME = "userdata.json";
 
-export const getSecretsFromFile = async function () {
-  // Check if the secrets file exists
+export const getUserData = async function () {
+  // Check if the user data file exists
   try {
-    await access(SECRETS_FILE_NAME);
+    await access(USER_DATA_FILE_NAME);
   } catch {
-    console.log(`Could not find ${SECRETS_FILE_NAME}`);
+    console.log(`Could not find ${USER_DATA_FILE_NAME}`);
     exit();
   }
 
-  // Read data from secrets file
-  const secretFileContents = await readFile(SECRETS_FILE_NAME, {
+  // Read data from user data file
+  const userDataContents = await readFile(USER_DATA_FILE_NAME, {
     encoding: "utf8",
   });
-  const secrets = JSON.parse(secretFileContents);
+  const userData = JSON.parse(userDataContents);
 
-  let { ConsumerKey, AccessToken } = secrets;
+  let { ConsumerKey, AccessToken } = userData;
 
   if (!ConsumerKey) {
-    console.log(`Consumer key is missing from ${SECRETS_FILE_NAME}`);
+    console.log(`Consumer key is missing from ${USER_DATA_FILE_NAME}`);
     exit();
   }
 
   return { ConsumerKey, AccessToken };
 };
 
-export const updateSecretsFile = async function (AccessToken, ConsumerKey) {
-  const updatedSecrets = JSON.stringify({
+export const updateUserData = async function (AccessToken, ConsumerKey) {
+  const updatedUserData = JSON.stringify({
     AccessToken,
     ConsumerKey,
   });
 
-  await writeFile(SECRETS_FILE_NAME, updatedSecrets);
+  await writeFile(USER_DATA_FILE_NAME, updatedUserData);
 };

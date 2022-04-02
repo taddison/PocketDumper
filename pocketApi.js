@@ -1,4 +1,4 @@
-import { updateSecretsFile } from "./util.js";
+import { updateUserData } from "./util.js";
 // @ts-ignore // no definitions yet - see https://github.com/DefinitelyTyped/DefinitelyTyped/pull/59287
 import * as readline from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
@@ -107,6 +107,6 @@ export const ensureAccessTokenIsValid = async function (
 
   const newAccessToken = await getAccessToken(requestToken, ConsumerKey);
 
-  await updateSecretsFile(newAccessToken, ConsumerKey);
+  await updateUserData(newAccessToken, ConsumerKey);
   return newAccessToken;
 };

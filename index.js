@@ -1,7 +1,7 @@
 import { ensureAccessTokenIsValid, getArticles } from "./pocketApi.js";
-import { getSecretsFromFile } from "./util.js";
+import { getUserData } from "./util.js";
 
-let { AccessToken, ConsumerKey } = await getSecretsFromFile();
+let { AccessToken, ConsumerKey } = await getUserData();
 
 AccessToken = await ensureAccessTokenIsValid(AccessToken, ConsumerKey);
 
