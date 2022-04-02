@@ -25,12 +25,12 @@ export const getUserData = async function () {
     exit();
   }
 
-  return { ConsumerKey, AccessToken };
+  return { ConsumerKey, AccessToken, Since };
 };
 
 export const updateUserData = async function (updatedData) {
   const existingData = await getUserData();
-  
+
   const newData = { ...existingData, ...updatedData };
   const updatedUserData = JSON.stringify(newData);
 
