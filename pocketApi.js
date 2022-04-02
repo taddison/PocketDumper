@@ -1,4 +1,5 @@
 import { updateSecretsFile } from "./util.js";
+// @ts-ignore // no definitions yet - see https://github.com/DefinitelyTyped/DefinitelyTyped/pull/59287
 import * as readline from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 
