@@ -18,7 +18,7 @@ export const getUserData = async function () {
   });
   const userData = JSON.parse(userDataContents);
 
-  let { ConsumerKey, AccessToken } = userData;
+  let { ConsumerKey, AccessToken, Since } = userData;
 
   if (!ConsumerKey) {
     console.log(`Consumer key is missing from ${USER_DATA_FILE_NAME}`);
@@ -28,11 +28,11 @@ export const getUserData = async function () {
   return { ConsumerKey, AccessToken };
 };
 
-export const updateUserData = async function (AccessToken, ConsumerKey) {
-  const updatedUserData = JSON.stringify({
-    AccessToken,
-    ConsumerKey,
-  });
+export const updateUserData = async function (updatedData) {
+  const existingData = await getUserData();
+  
+  const newData = { ...existingData, ...updatedData };
+  const updatedUserData = JSON.stringify(newData);
 
   await writeFile(USER_DATA_FILE_NAME, updatedUserData);
 };

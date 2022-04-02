@@ -107,6 +107,6 @@ export const ensureAccessTokenIsValid = async function (
 
   const newAccessToken = await getAccessToken(requestToken, ConsumerKey);
 
-  await updateUserData(newAccessToken, ConsumerKey);
+  await updateUserData({AccessToken: newAccessToken});
   return newAccessToken;
 };
