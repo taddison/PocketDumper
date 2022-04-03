@@ -43,14 +43,16 @@ export const updateUserData = async function (updatedData) {
 };
 
 export const writeArticlesToFile = async function (articleList) {
-  const articleListString = JSON.stringify(articleList);
-  // YYYY-MM-DDTHH:MM:SS
-  const fileName = `${new Date().toISOString().slice(0, 19)}.json`;
-  const folder = "./articles";
+  // Indent with 2 spaces
+  const articleListString = JSON.stringify(articleList, null, 2);
 
+  const folder = "./articles";
   if (!(await checkPathExists(folder))) {
     await mkdir(folder);
   }
+
+  // YYYY-MM-DDTHH:MM:SS
+  const fileName = `${new Date().toISOString().slice(0, 19)}.json`;
 
   await writeFile(`${folder}/${fileName}`, articleListString);
 };
