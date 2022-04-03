@@ -1,18 +1,23 @@
 import { exit } from "node:process";
-import { readFile, writeFile, access } from "node:fs/promises";
+import { readFile, writeFile, access, mkdir } from "node:fs/promises";
 
 const USER_DATA_FILE_NAME = "userdata.json";
 
-export const getUserData = async function () {
-  // Check if the user data file exists
+async function checkPathExists(path) {
   try {
-    await access(USER_DATA_FILE_NAME);
+    await access(path);
+    return true;
   } catch {
+    return false;
+  }
+}
+
+export const getUserData = async function () {
+  if (!(await checkPathExists(USER_DATA_FILE_NAME))) {
     console.log(`Could not find ${USER_DATA_FILE_NAME}`);
     exit();
   }
 
-  // Read data from user data file
   const userDataContents = await readFile(USER_DATA_FILE_NAME, {
     encoding: "utf8",
   });
@@ -35,4 +40,17 @@ export const updateUserData = async function (updatedData) {
   const updatedUserData = JSON.stringify(newData);
 
   await writeFile(USER_DATA_FILE_NAME, updatedUserData);
+};
+
+export const writeArticlesToFile = async function (articleList) {
+  const articleListString = JSON.stringify(articleList);
+  // YYYY-MM-DDTHH:MM:SS
+  const fileName = `${new Date().toISOString().slice(0, 19)}.json`;
+  const folder = "./articles";
+
+  if (!(await checkPathExists(folder))) {
+    await mkdir(folder);
+  }
+
+  await writeFile(`${folder}/${fileName}`, articleListString);
 };
