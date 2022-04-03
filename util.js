@@ -21,9 +21,8 @@ export const getUserData = async function () {
   const userDataString = await readFile(USER_DATA_FILE_NAME, {
     encoding: "utf8",
   });
-  const userData = JSON.parse(userDataString);
-
-  const { ConsumerKey, AccessToken, Since } = userData;
+  
+  const { ConsumerKey, AccessToken, Since } = JSON.parse(userDataString);
 
   if (!ConsumerKey) {
     console.log(`Consumer key is missing from ${USER_DATA_FILE_NAME}`);

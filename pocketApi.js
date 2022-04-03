@@ -91,11 +91,10 @@ export const ensureAccessTokenIsValid = async function (
     } catch {
       // TODO: Check if this is an authentication error or something else
       console.log("Access token is invalid, requesting a new token...");
-      existingAccessToken = null;
     }
   }
 
-  // Either no token or the existing token was invalid and has been set to null
+  // Either no token or the existing token was invalid
   const requestToken = await getRequestToken(ConsumerKey);
 
   console.log(
@@ -107,6 +106,6 @@ export const ensureAccessTokenIsValid = async function (
 
   const newAccessToken = await getAccessToken(requestToken, ConsumerKey);
 
-  await updateUserData({AccessToken: newAccessToken});
+  await updateUserData({ AccessToken: newAccessToken });
   return newAccessToken;
 };
