@@ -1,3 +1,3 @@
 # PocketDumper
 
-Requires node 17.5+.
+Requires node 18+.
